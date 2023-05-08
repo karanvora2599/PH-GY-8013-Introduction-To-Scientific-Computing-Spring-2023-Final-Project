@@ -1,6 +1,6 @@
 from IO_Class import UnifiedImageHandler, UnsupportedFileFormatException
 from Transforms import UnifiedImageTransformer, UnsupportedTransformException
-from adjustments import UnifiedImageAdjustment, UnsupportedAdjustmentException
+from Adjustments import UnifiedImageAdjustment, UnsupportedAdjustmentException
 import numpy as np
 
 class ImageProcessingInterface:
@@ -50,10 +50,11 @@ class ImageProcessingInterface:
             print("Error: Image is None, cannot apply adjustment.")
             return None
         try:
-            return self.image_adjustment.apply_adjustment(adjustment, image, *args, **kwargs)
+            image_adjustment = self.image_adjustment_factory.create_adjustment(adjustment)
+            return image_adjustment.apply_adjustment(image, *args, **kwargs)
         except UnsupportedAdjustmentException as e:
             print(e)
             return None
-        except ValueError as e:
-            print(e)
+        except Exception as e:
+            print(f"Error applying adjustment: {e}")
             return None

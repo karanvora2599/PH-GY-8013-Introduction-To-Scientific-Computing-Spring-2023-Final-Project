@@ -35,7 +35,7 @@ class BrightnessAdjustment(AbstractImageAdjustment):
             raise ValueError(f"Error adjusting brightness: {e}")
 
 class ContrastAdjustment(AbstractImageAdjustment):
-    def adjust_image(self, image: np.ndarray, factor: float) -> np.ndarray:
+    def apply_adjustment(self, image: np.ndarray, factor: float) -> np.ndarray:
         try:
             if not (isinstance(factor, int) or isinstance(factor, float)):
                 raise ValueError("Invalid factor. Expected a numeric value.")
@@ -58,7 +58,7 @@ class ContrastAdjustment(AbstractImageAdjustment):
             return image.copy()  # Fallback: return the original image as a copy
 
 class SaturationAdjustment(AbstractImageAdjustment):
-    def adjust_image(self, image: np.ndarray, factor: float) -> np.ndarray:
+    def apply_adjustment(self, image: np.ndarray, factor: float) -> np.ndarray:
         try:
             if not (isinstance(factor, int) or isinstance(factor, float)):
                 raise ValueError("Invalid factor. Expected a numeric value.")
@@ -101,10 +101,10 @@ class ImageAdjustmentFactory:
             raise UnsupportedAdjustmentException(f"Unsupported adjustment: {adjustment}")
 
 class UnifiedImageAdjustment(AbstractImageAdjustment):
-    def adjust_image(self, adjustment: str, image: np.ndarray, *args, **kwargs) -> np.ndarray:
+    def apply_adjustment(self, adjustment: str, image: np.ndarray, *args, **kwargs) -> np.ndarray:
         try:
             adjuster = ImageAdjustmentFactory.get_adjustment(adjustment)
-            return adjuster.adjust_image(image, *args, **kwargs)
+            return adjuster.apply_adjustment(image, *args, **kwargs)
         except UnsupportedAdjustmentException as e:
             print(e)
             return None
